@@ -23,34 +23,39 @@ public class Main {
         for (int i = 0; i < nn.layers.get(nn.layers.size() - 1).neurons.size(); i++) {
             System.out.println(nn.layers.get(nn.layers.size() - 1).neurons.get(i).value);
         }
+        System.out.println("Result for input {1,0} before training:");
+        nn.forward(new double[]{1, 0});
+        for (int i = 0; i < nn.layers.get(nn.layers.size() - 1).neurons.size(); i++) {
+            System.out.println(nn.layers.get(nn.layers.size() - 1).neurons.get(i).value);
+        }
+        System.out.println();
         List<TrainingObject> to = new ArrayList<>();
         to.add(new TrainingObject(new double[]{0, 0}, new double[]{0}));
         to.add(new TrainingObject(new double[]{0, 1}, new double[]{1}));
         to.add(new TrainingObject(new double[]{1, 0}, new double[]{1}));
         to.add(new TrainingObject(new double[]{1, 1}, new double[]{0}));
-        nn.train(350000, 0.1, to);
-        System.out.println("After training for input {0,0}");
+        nn.train(3500000, 0.1, to);
+        System.out.println("\nResult for input {0,0} after training:");
         nn.forward(new double[]{0, 0});
         for (int i = 0; i < nn.layers.get(nn.layers.size() - 1).neurons.size(); i++) {
             System.out.println(nn.layers.get(nn.layers.size() - 1).neurons.get(i).value);
         }
+        System.out.println("Before training for input {1,0}");
         nn.forward(new double[]{1, 0});
         for (int i = 0; i < nn.layers.get(nn.layers.size() - 1).neurons.size(); i++) {
             System.out.println(nn.layers.get(nn.layers.size() - 1).neurons.get(i).value);
-        }nn.forward(new double[]{0, 1});
-        for (int i = 0; i < nn.layers.get(nn.layers.size() - 1).neurons.size(); i++) {
-            System.out.println(nn.layers.get(nn.layers.size() - 1).neurons.get(i).value);
         }
-
-        for(int i = 0; i < 400; i++) {
+        System.out.println();
+        for(int i = 0; i < 396; i++) {
             to.add(to.get(new Random().nextInt(4)));
         }
-        for(int i = 0; i< to.size(); i++) {
-            System.out.println(Arrays.toString(to.get(i).expected));
-        }
+//        for(int i = 0; i< to.size(); i++) {
+//            System.out.println(Arrays.toString(to.get(i).expected));
+//        }
 
         System.out.println("The test size is: " + to.size());
-        System.out.println(nn.testXOR(to));
+        System.out.println("Neural Network accuracy in performing XOR operations: ");
+        System.out.println(nn.testXOR(to) + "%");
 
 
 //        NeuralNetwork nn = new NeuralNetwork();

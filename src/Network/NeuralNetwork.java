@@ -104,6 +104,8 @@ public class NeuralNetwork {
     }
 
     public void train(int epochs, double learningRate, List<TrainingObject> to) {
+        System.out.println("=====================");
+        System.out.println("Starting training...");
         for(int i = 0; i < epochs; i++) {
             for(int j = 0; j < to.size(); j++) {
                 forward(to.get(j).input);
@@ -111,8 +113,10 @@ public class NeuralNetwork {
             }
 //            to = Helper.shuffle(to);
 //            System.out.println("Epoch finished: " + i);
-            if(i % 1000 == 0) System.out.printf("Epoch %d completed..\n", i);
+            if(i % 100000 == 0 && i > 0) System.out.printf("Epoch %d completed..\n", i);
         }
+        System.out.println("Training completed!");
+        System.out.println("=====================");
     }
 
     public double test(List<TrainingObject> to) {
