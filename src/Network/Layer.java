@@ -8,6 +8,7 @@ import java.util.List;
 public class Layer {
 
     public List<Neuron> neurons;
+    public double totalDelta;
 
     //First Layer
     public Layer(double[] inputs) {

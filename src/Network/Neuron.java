@@ -3,9 +3,13 @@ package Network;
 public class Neuron {
 
     public double value;
+    public double weightedValue;
     public double[] weights;
+    public double[] cacheWeights;
     public double bias;
+    public double cacheBias;
     public double gradient;
+
 
     //First Layer Neuron
     public Neuron(double input) {
@@ -17,6 +21,7 @@ public class Neuron {
     public Neuron(double[] weights, double bias) {
         this.weights = weights;
         this.bias = bias;
+        this.cacheWeights = new double[weights.length];
     }
 
 }
