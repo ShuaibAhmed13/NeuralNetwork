@@ -44,7 +44,7 @@ public class NeuralNetwork {
         }
     }
 
-    public void backPropagation(double learningRate, double expected) {
+    public void backPropagation(double learningRate, double[] expected) {
         int currentLayerIndex = layers.size()-1;
         //Change in cost over change in activated value
         double cost_activatedVal;
@@ -56,7 +56,7 @@ public class NeuralNetwork {
         double totalDelta = 0;
         for(int i = 0; i < layers.get(currentLayerIndex).neurons.size(); i++) {
             Neuron neuron = layers.get(currentLayerIndex).neurons.get(i);
-            cost_activatedVal = Helper.qcfDerivative(expected, neuron.value);
+            cost_activatedVal = Helper.qcfDerivative(expected[i], neuron.value);
             activatedVal_weightedVal = Helper.sigmoidDerivative(neuron.weightedValue);
             double delta = cost_activatedVal * activatedVal_weightedVal;
             totalDelta += delta;
@@ -109,7 +109,41 @@ public class NeuralNetwork {
                 forward(to.get(j).input);
                 backPropagation(learningRate, to.get(j).expected);
             }
-            System.out.printf("Epoch %d completed..\n", i);
+//            to = Helper.shuffle(to);
+//            System.out.println("Epoch finished: " + i);
+            if(i % 1000 == 0) System.out.printf("Epoch %d completed..\n", i);
         }
+    }
+
+    public double test(List<TrainingObject> to) {
+        double correct = 0;
+        for(int i = 0; i < to.size(); i ++) {
+            forward(to.get(i).input);
+            double max = 0;
+            int index = 0;
+            for(int j = 0; j < layers.get(layers.size()-1).neurons.size(); j++) {
+                double val = layers.get(layers.size()-1).neurons.get(j).value;
+                if(val > max) {
+                    max = val;
+                    index = j;
+                }
+            }
+            double[] actual = Helper.getLabelArray(index, 10);
+            if(Arrays.equals(actual, to.get(i).expected)) correct++;
+        }
+        System.out.println(to.size());
+        return correct / to.size();
+    }
+
+    public double testXOR(List<TrainingObject> to) {
+        int count = 0;
+        for(int i = 0; i < 100; i++) {
+            for(int j = 0; j < to.size(); j++) {
+                forward(to.get(j).input);
+                double val = layers.get(layers.size()-1).neurons.get(0).value;
+                if(Arrays.equals(to.get(j).expected, new double[]{Math.round(val)})) count++;
+            }
+        }
+        return count / to.size();
     }
 }

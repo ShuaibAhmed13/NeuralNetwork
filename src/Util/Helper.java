@@ -29,6 +29,14 @@ public class Helper {
         return actual-expected;
     }
 
+    public static double reLU(double x) {
+        return Math.max(0, x);
+    }
+
+    public static double reLUDerivative(double x) {
+        return x < 0 ? 0 : 1;
+    }
+
     public static List<TrainingObject> shuffle(List<TrainingObject> to) {
         Random random = new Random();
         for(int i = to.size()-1; i > 0; i--) {
@@ -38,5 +46,11 @@ public class Helper {
             to.set(i, toTemp);
         }
         return to;
+    }
+
+    public static double[] getLabelArray(int val, int size) {
+        double[] array = new double[size];
+        array[val] = 1;
+        return array;
     }
 }
