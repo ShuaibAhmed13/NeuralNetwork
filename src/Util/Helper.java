@@ -1,5 +1,8 @@
 package Util;
 
+import Training.TrainingObject;
+
+import java.util.List;
 import java.util.Random;
 
 public class Helper {
@@ -24,5 +27,16 @@ public class Helper {
 
     public static double qcfDerivative(double expected, double actual) {
         return actual-expected;
+    }
+
+    public static List<TrainingObject> shuffle(List<TrainingObject> to) {
+        Random random = new Random();
+        for(int i = to.size()-1; i > 0; i--) {
+            int randomVal = random.nextInt(i);
+            TrainingObject toTemp = to.get(randomVal);
+            to.set(randomVal, to.get(i));
+            to.set(i, toTemp);
+        }
+        return to;
     }
 }
