@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Helper {
 
-    static Random random = new Random(0);
+    static Random random = new Random(123);
     public static double getRandomDouble() {
         return random.nextGaussian();
     }

@@ -3,11 +3,12 @@ package Network;
 import Training.TrainingObject;
 import Util.Helper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class NeuralNetwork {
+
+    public double error = 0;
+
     public List<Layer> layers;
 
     public NeuralNetwork() {
@@ -60,6 +61,8 @@ public class NeuralNetwork {
             activatedVal_weightedVal = Helper.sigmoidDerivative(neuron.weightedValue);
             double delta = cost_activatedVal * activatedVal_weightedVal;
             totalDelta += delta;
+            error += Helper.quadraticCostFunction(expected[i], neuron.value);
+//            error += 0.5 * (Math.pow((expected[i] - neuron.value), 2));
 //            layers.get(currentLayerIndex).neurons.get(i).gradient = delta;
             for(int j = 0; j < layers.get(currentLayerIndex).neurons.get(i).weights.length; j++) {
                 //Get the value of the neuron that corresponds to the current weight
@@ -106,17 +109,37 @@ public class NeuralNetwork {
     public void train(int epochs, double learningRate, List<TrainingObject> to) {
         System.out.println("=====================");
         System.out.println("Starting training...");
+        double min = Integer.MAX_VALUE;
+
         for(int i = 0; i < epochs; i++) {
+            //double avgError = 0;
             for(int j = 0; j < to.size(); j++) {
                 forward(to.get(j).input);
                 backPropagation(learningRate, to.get(j).expected);
+                //avgError += error;
+                if(j % 1000 == 0) {
+                    error = error / layers.get(layers.size()-1).neurons.size();
+                    //System.out.println("The error at i " + j + " is " + error);
+//                    min = Math.min(min, error) > 1 ? Math.min(min, error) : min;
+                    if(i > 0) min = Math.min(error, min);
+//                    if(error < 5 && error > 1) {
+//                        System.out.println("Broke out early");
+//                        System.out.println("Error min was " + error);
+//                        return;
+//                    }
+                    error = 0;
+                }
             }
+//            System.out.println("The avg error is: " + avgError/1000);
+
+//            Collections.shuffle(to);
 //            to = Helper.shuffle(to);
 //            System.out.println("Epoch finished: " + i);
             if(i % 100000 == 0 && i > 0) System.out.printf("Epoch %d completed..\n", i);
         }
         System.out.println("Training completed!");
         System.out.println("=====================");
+        System.out.println("the minimum error found was: " + min);
     }
 
     public double test(List<TrainingObject> to) {

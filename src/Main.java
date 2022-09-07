@@ -49,18 +49,20 @@ public class Main {
         for(int i = 0; i < 396; i++) {
             to.add(to.get(new Random().nextInt(4)));
         }
-//        for(int i = 0; i< to.size(); i++) {
-//            System.out.println(Arrays.toString(to.get(i).expected));
-//        }
 
         System.out.println("The test size is: " + to.size());
         System.out.println("Neural Network accuracy in performing XOR operations: ");
         System.out.println(nn.testXOR(to) + "%");
 
 
+
+
+
+
+
 //        NeuralNetwork nn = new NeuralNetwork();
 //        nn.addLayer(new double[784]);
-//        nn.addLayer(784, 392);
+//        nn.addLayer(784, 100);
 //        nn.addLayer(100, 10);
 //        List<Image> images = MNIST_Reader.readMNIST("MNIST_DATA/mnist_train.csv");
 //        List<TrainingObject> to = new ArrayList<>();
@@ -81,7 +83,7 @@ public class Main {
 //            }
 //        }
 //        System.out.println("the answer index is: " + index);
-//        nn.train(1, 0.05, to);
+//        nn.train(10, .01, to);
 //        System.out.println("Input is number 5");
 //        nn.forward(to.get(0).input);
 //        max = 0;
