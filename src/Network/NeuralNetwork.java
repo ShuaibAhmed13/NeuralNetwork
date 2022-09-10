@@ -60,11 +60,14 @@ public class NeuralNetwork {
             cost_activatedVal = Helper.qcfDerivative(expected[i], neuron.value);
             activatedVal_weightedVal = Helper.sigmoidDerivative(neuron.weightedValue);
             double delta = cost_activatedVal * activatedVal_weightedVal;
-            totalDelta += delta;
+//            totalDelta += delta;
             error += Helper.quadraticCostFunction(expected[i], neuron.value);
 //            error += 0.5 * (Math.pow((expected[i] - neuron.value), 2));
 //            layers.get(currentLayerIndex).neurons.get(i).gradient = delta;
             for(int j = 0; j < layers.get(currentLayerIndex).neurons.get(i).weights.length; j++) {
+                layers.get(currentLayerIndex-1).neurons.get(j).gradient += delta *
+                        neuron.weights[j];
+//                totalDelta += delta * neuron.weights[j];
                 //Get the value of the neuron that corresponds to the current weight
                 double prevActivatedValue = layers.get(currentLayerIndex-1).neurons.get(j).value;
                 //totalCost is the change in cost with respect to the change in the current weight
@@ -75,16 +78,21 @@ public class NeuralNetwork {
             layers.get(currentLayerIndex).neurons.get(i).cacheBias =
                     layers.get(currentLayerIndex).neurons.get(i).bias - delta * learningRate;
         }
-        layers.get(currentLayerIndex).totalDelta = totalDelta;
+//        layers.get(currentLayerIndex).totalDelta = totalDelta;
 
         for(int i = currentLayerIndex-1; i > 0; i--) {
             totalDelta = 0;
             for(int j = 0; j < layers.get(i).neurons.size(); j++) {
                 Neuron neuron = layers.get(i).neurons.get(j);
                 activatedVal_weightedVal = Helper.sigmoidDerivative(neuron.weightedValue);
-                double delta = activatedVal_weightedVal * layers.get(i+1).totalDelta;
-                totalDelta += delta;
+//                double delta = activatedVal_weightedVal * layers.get(i+1).totalDelta;
+                double delta = activatedVal_weightedVal * layers.get(i).neurons.get(j).gradient; // good one
+
+//                totalDelta += delta * neuron.weights[i];
                 for(int k = 0; k < layers.get(i).neurons.get(j).weights.length; k++){
+                    layers.get(i-1).neurons.get(k).gradient += delta *
+                            neuron.weights[k];
+//                    totalDelta += delta * neuron.weights[k];
                     double prevActivatedValue = layers.get(i-1).neurons.get(k).value;
                     double totalCost = delta * prevActivatedValue;
                     layers.get(i).neurons.get(j).cacheWeights[k] = layers.get(i).neurons.get(j).weights[k] -
@@ -93,7 +101,7 @@ public class NeuralNetwork {
                 layers.get(i).neurons.get(j).cacheBias = layers.get(i).neurons.get(j).bias -
                         delta * learningRate;
             }
-            layers.get(i).totalDelta = totalDelta;
+//            layers.get(i).totalDelta = totalDelta;
         }
 
         //Iterate through every layer and update the weights and biases
@@ -101,6 +109,7 @@ public class NeuralNetwork {
             for(int j = 0; j < layers.get(i).neurons.size(); j++) {
                 layers.get(i).neurons.get(j).weights = layers.get(i).neurons.get(j).cacheWeights;
                 layers.get(i).neurons.get(j).bias = layers.get(i).neurons.get(j).cacheBias;
+                layers.get(i).neurons.get(j).gradient = 0;
             }
         }
 
@@ -119,8 +128,8 @@ public class NeuralNetwork {
                 //avgError += error;
                 if(j % 1000 == 0) {
                     error = error / layers.get(layers.size()-1).neurons.size();
-                    //System.out.println("The error at i " + j + " is " + error);
-//                    min = Math.min(min, error) > 1 ? Math.min(min, error) : min;
+                    System.out.println("The error at i " + j + " is " + error);
+                    min = Math.min(min, error) > 1 ? Math.min(min, error) : min;
                     if(i > 0) min = Math.min(error, min);
 //                    if(error < 5 && error > 1) {
 //                        System.out.println("Broke out early");
